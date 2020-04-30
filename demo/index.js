@@ -34,7 +34,20 @@ const session = Session({
 });
 window.session = session; // for direct access in console
 
-const websocket = new WebSocket('ws://localhost:8188', 'janus-protocol');
+function findGetParameter(parameterName) {
+    var result = null,
+        tmp = [];
+    location.search
+        .substr(1)
+        .split("&")
+        .forEach(function (item) {
+          tmp = item.split("=");
+          if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+        });
+    return result;
+}
+
+const websocket = new WebSocket(findGetParameter('janus'), 'janus-protocol');
 
 // Outgoing communications to Janus.
 session.on('output', (msg) => websocket.send(JSON.stringify(msg)));
